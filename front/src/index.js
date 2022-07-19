@@ -9,6 +9,7 @@ import {
 import './index.css';
 import App from './App';
 import Login from "./routes/login";
+import Top from "./routes/top";
 import Signup from './routes/signup';
 import Chat from './routes/chat';
 import Mypage from './routes/mypage';
@@ -20,6 +21,7 @@ root.render(
     <BrowserRouter>
       <Routes>
         <Route path="/" element={<App />} >
+          <Route path="top" element={<Top />} />
           <Route path="login" element={<Login />} />
           <Route path="signup" element={<Signup />} />
           <Route path="chat" element={<Chat />} />
