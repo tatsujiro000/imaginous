@@ -1,6 +1,7 @@
 import { Outlet, NavLink } from "react-router-dom";
 import './App.css';
 
+
 export default function App() {
   return (
     <div>
@@ -18,6 +19,7 @@ export default function App() {
         <NavLink className={({ isActive }) => isActive ? "activeLink" : ""} to="/signup">signup</NavLink> |{" "}
       </nav>
       <Outlet />
+
     </div>
   );
 }

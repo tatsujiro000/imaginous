@@ -7,13 +7,13 @@ import {
 } from "react-router-dom";
 
 import './index.css';
-import App from './App';
-import Login from "./routes/login";
-import Top from "./routes/top";
-import Signup from './routes/signup';
-import Chat from './routes/chat';
-import Mypage from './routes/mypage';
-import reportWebVitals from './reportWebVitals';
+import App from './App.js';
+import Login from "./routes/login.jsx";
+import Top from "./routes/top.jsx";
+import Signup from './routes/signup.jsx';
+import Chat from './routes/chat.jsx';
+import Mypage from './routes/mypage.jsx';
+import reportWebVitals from './reportWebVitals.js';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
