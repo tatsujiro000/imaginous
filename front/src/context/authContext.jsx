@@ -7,7 +7,7 @@ export function useAuthContext() {
     return useContext(AuthContext);
 }
 
-export function AuthProvider({ children}) {
+export function AuthProvider({ children }) {
     const [user, setUser ] = useState('');
     const [loading, setLoading ] = useState(true);
     const auth = getAuth();

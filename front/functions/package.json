@@ -17,6 +17,7 @@
     "dotenv": "^16.0.1",
     "firebase-admin": "^10.0.2",
     "firebase-functions": "^3.18.0",
+    "googleapis": "^39.2.0",
     "oura-cloud-api": "^1.0.2"
   },
   "devDependencies": {

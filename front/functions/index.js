@@ -1,6 +1,7 @@
 const functions = require('firebase-functions');
 const admin = require('firebase-admin');
 admin.initializeApp()
+const db = admin.firestore();
 
 // const GetConditionScore = require("./ouraAPI");
 // import GetConditionScore from "../src/components/score/ouraAPI";
@@ -20,77 +21,54 @@ function getBeforeNdays(n){
 const yesterday = getBeforeNdays(1);
 
 
+
+let accessToken = "";
+
+const user = db.collection('users').doc('K8Uko5DUf5eHHM4OpFxM');
+const getUserInfo = () => {
+  user.get().then(function(doc) {
+      if (doc.exists) {
+        const userInfo = doc.data();
+        const ourakey = userInfo.ourakey;
+        accessToken = ourakey;
+        console.log("accessToken", accessToken);
+        return accessToken;
+      } else {
+          console.log("No such document!");
+      }
+  }).catch(function(error) {
+      console.log("Error getting document:", error);
+  });
+}
+
+
+
+
+
 // exports.fetchScore = functions.https.onRequest(async (request, response) => {
-//     // try {
-//     //     const db = admin.firestore()
-//     //     const doc = await db.collection('health_scores').doc('fY04wBpKsSmd7mfP2KrD').get()
-        
-//     //     const healthScore = doc.data()
-//     //     response.send(healthScore)
-//     // } catch (e) {
-//     //     console.error(e);
-//     //     response.status(500).send(e)
-//     // }
+    
 
-//       require('dotenv').config();
-//       const Client = require('oura-cloud-api');
 
-//       const GetConditionScore = async () => {
-        
-        
-//         const accessToken = process.env.OURA_KEY;
-        
-//         try {
-//             const client = new Client(accessToken);
-            
-//             const userInfo  = await client.getUserInfo();
-//             // console.log(JSON.stringify(userInfo));
-            
-//             const readiness  = await client.getReadinessSummaries({ start: yesterday, end: yesterday });
-//             const sleeps  = await client.getSleepSummaries({ start: yesterday, end: yesterday });
-//             console.log(JSON.stringify(sleeps))
-
-//             let todayReady = "";
-//             let todaySleep = "";
-//             for(const ready of readiness){
-//                 todayReady = ready.score;
-//             }
-//             for(const sleep of sleeps){
-//               todaySleep = sleep.score;
-//             }
-//             // let todayReady = readiness.map((readiness) => {
-//             //   return JSON.stringify(readiness.score);
-//             // });
-//           // let todaySleep = sleeps.map((sleep) => {
-//           //   return JSON.stringify(sleep.score);
-//           // });
-//             let todayScore = {
-//               readyScore:todayReady,
-//               sleepScore:todaySleep
-//             };
-//             // todayScore = todayScore.readyScore.concat(todayReady);
-//             // todayScore = todayScore.sleepScore.concat(todaySleep);
-//             return todayScore;
-          
-//         } catch (error) {
-//             console.log(`Oh-no, error occured: ${error}`);
+//         const user = db.collection('users').doc('K8Uko5DUf5eHHM4OpFxM');
+//         const getUserInfo = () => {
+//           user.get().then(function(doc) {
+//               if (doc.exists) {
+//                 const userInfo = doc.data();
+//                 const ourakey = userInfo.ourakey;
+//                 accessToken = ourakey;
+//                 console.log("accessToken", accessToken);
+//                 return accessToken;
+//               } else {
+//                   console.log("No such document!");
+//               }
+//           }).catch(function(error) {
+//               console.log("Error getting document:", error);
+//           });
 //         }
+//         getUserInfo();
+        
 
 
-//     };
-
-//     try{
-//         GetConditionScore().then(todayScore => {
-//           console.log("todayScore",todayScore)
-//           console.log(todayScore.readyScore)
-//           console.log("yesterday",getBeforeNdays(1));
-          
-//         response.send(todayScore)
-//       })
-//     }catch{
-//         console.error(e);
-//         response.status(500).send(e)
-//     }
 // });
 
 
@@ -100,11 +78,15 @@ exports.scheduledFuncScore = functions.region('asia-northeast1').pubsub
     .onRun(async (context) => {
 
         require('dotenv').config();
-        const Client = require('oura-cloud-api');
+        const Client = require('oura-cloud-api');//oura ring API
 
         const GetConditionScore = async () => {
-          
-            const accessToken = process.env.OURA_KEY;
+
+            //firestoreからkeyを取得する
+            const userKey = db.collection('users').doc('K8Uko5DUf5eHHM4OpFxM');
+
+            // const accessToken = process.env.OURA_KEY;
+            const accessToken = getUserInfo();
             
             try {
               const client = new Client(accessToken);
@@ -136,7 +118,6 @@ exports.scheduledFuncScore = functions.region('asia-northeast1').pubsub
         }
 
 
-        const db = admin.firestore()
         GetConditionScore().then((todayScore) => {
             db.collection("health_scores").add({
               condition_score: todayScore.readyScore,

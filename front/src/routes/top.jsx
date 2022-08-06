@@ -2,7 +2,8 @@ import db from '../firebase.js';
 import { collection, getDocs, orderBy, query } from "firebase/firestore";
 import React, { useState, useEffect } from 'react';
 import Event from '../components/event';
-import Score from '../components/score';
+import Score from '../components/score/score';
+import RenderLineChart  from '../components/chart/chart';
 import { useNavigate, Navigate } from 'react-router-dom';
 import { getAuth } from 'firebase/auth';
 import { useAuthContext } from '../context/authContext';
@@ -15,11 +16,13 @@ export default function Top() {
   const navigate = useNavigate();
   const { user } = useAuthContext();
 
+
   const handleLogout = () => {
     const auth = getAuth();
     auth.signOut();
     navigate('/login');
   };
+  
 
   useEffect(() => {
     //events
@@ -29,7 +32,7 @@ export default function Top() {
       setEvents(querySnapshot.docs.map((doc) =>doc.data()));
     });
 
-    //score
+    //scores
     const myScores = collection(db, "health_scores");
     getDocs(myScores).then((querySnapshot) => {
       setScores(querySnapshot.docs.map((doc) =>doc.data()));
@@ -42,6 +45,7 @@ export default function Top() {
     return <Navigate to="/login" />;
   } else {
     return (
+
       <main style={{ padding: "1rem 0" }}>
         <h2>Top</h2>
         <div>
@@ -67,7 +71,12 @@ export default function Top() {
         </div>
         <div>
           <h3>Feeling</h3>
-
+        </div>
+        <div>
+          <h3>Trend</h3>
+            <RenderLineChart 
+         />
+            
         </div>
 
       </main>
