@@ -9,13 +9,17 @@
     "assert": "^2.0.0",
     "dayjs": "^1.11.4",
     "dotenv": "^16.0.1",
-    "firebase": "^9.9.0",
+    "firebase": "^9.9.1",
+    "firebase-admin": "^11.0.1",
+    "firebase-functions": "^3.22.0",
+    "oura-cloud-api": "^1.0.2",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-router-dom": "^6.3.0",
-    "react-scripts": "5.0.1",
+    "react-scripts": "^5.0.1",
+    "recharts": "^2.1.13",
     "web-vitals": "^2.1.4",
-    "webpack": "^5.73.0"
+    "webpack": "^5.74.0"
   },
   "scripts": {
     "start": "react-scripts start",

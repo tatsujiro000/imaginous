@@ -24,3 +24,9 @@ yarn-error.log*
 
 .env
 firebase.js
+
+database-debug.log
+firestore-debug.log
+pubsub-debug.log
+ui-debug.log
+.gitignore
