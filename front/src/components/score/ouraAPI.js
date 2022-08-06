@@ -9,11 +9,8 @@ const GetConditionScore = async () => {
     try {
         const client = new Client(accessToken);
         
-        const userInfo  = await client.getUserInfo();
-        // console.log(JSON.stringify(userInfo));
-        
+        const userInfo  = await client.getUserInfo();        
         const sleeps  = await client.getReadinessSummaries({ start: '2022-07-23', end: '2022-07-25' });
-        // console.log(JSON.stringify(sleeps));
 
         const conditionScore = sleeps.map((sleep) => {
 
@@ -28,11 +25,6 @@ const GetConditionScore = async () => {
 
 
 };
-
-// GetConditionScore().then((score) => {
-//     console.log(score)
-// });
-
 
 export default GetConditionScore;
 
