@@ -130,7 +130,7 @@ exports.scheduledFuncScore = functions.region('asia-northeast1').pubsub
         });
         
 
-        console.info("毎朝4時に実行中");
+        console.info("毎朝4時に実行中 score");
         return;
     });
 
@@ -150,6 +150,6 @@ exports.scheduledFuncEvent = functions.region('asia-northeast1').pubsub
             })
         
 
-        console.info("毎朝4時に実行中");
+        console.info("毎朝4時に実行 event");
         return;
     });

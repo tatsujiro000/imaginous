@@ -14,31 +14,36 @@ import Signup from './routes/signup.jsx';
 import Chat from './routes/chat.jsx';
 import Mypage from './routes/mypage.jsx';
 import reportWebVitals from './reportWebVitals.js';
+import { StyledEngineProvider } from '@mui/material/styles';
+
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
-    <BrowserRouter>
-      <Routes>
-        <Route path="/" element={<App />} >
-          <Route path="top" element={<Top />} />
-          <Route path="login" element={<Login />} />
-          <Route path="signup" element={<Signup />} />
-          <Route path="chat" element={<Chat />} />
-          <Route path="mypage" element={<Mypage />} />
-        </Route>
-        
-        <Route
-          path="*"
-          element={
-            <main style={{ padding: "1rem" }}>
-              <p>There's nothing here!</p>
-            </main>
-          }
-        />
-      </Routes>
-    </BrowserRouter>
+    <StyledEngineProvider injectFirst>
 
+      <BrowserRouter>
+        <Routes>
+          <Route path="/" element={<App />} >
+            <Route path="top" element={<Top />} />
+            <Route path="login" element={<Login />} />
+            <Route path="signup" element={<Signup />} />
+            <Route path="chat" element={<Chat />} />
+            <Route path="mypage" element={<Mypage />} />
+          </Route>
+          
+          <Route
+            path="*"
+            element={
+              <main style={{ padding: "1rem" }}>
+                <p>There's nothing here!</p>
+              </main>
+            }
+          />
+        </Routes>
+      </BrowserRouter>
+
+    </StyledEngineProvider>
   </React.StrictMode>
 );
 

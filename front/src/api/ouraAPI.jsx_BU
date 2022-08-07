@@ -1,0 +1,32 @@
+import { useState, useEffect } from "react";
+import UserInfo from "../components/userinfo/userinfo";
+
+//ログイン情報からuidを取得
+//uidをもとに、ourakeyを取得
+const userProfile = UserInfo();
+// const profile = userProfile.userinfo;
+
+
+// const Client = require('oura-cloud-api');
+
+const GetOuraUserInfo = () => {
+    
+    const [ ouraUserInfo, setOuraUserInfo ] = useState(null);
+
+    useEffect(()=> {
+        // const accessToken = profile.ourakey;
+        // const client = new Client(accessToken);
+        
+        // setOuraUserInfo(client.getUserInfo());
+        const aaa = "aaa";
+        setOuraUserInfo(aaa);
+
+    },[])
+    
+  return { ouraUserInfo }
+
+};
+
+export default GetOuraUserInfo;
+
+
