@@ -7,6 +7,7 @@ import RenderLineChart  from '../components/chart/chart';
 import { useNavigate, Navigate } from 'react-router-dom';
 import { getAuth } from 'firebase/auth';
 import { useAuthContext } from '../context/authContext';
+import Stack from '@mui/material/Stack';
 
 
 
@@ -49,6 +50,7 @@ export default function Top() {
       <main style={{ padding: "1rem 0" }}>
         <h2>Top</h2>
         <div>
+          <Stack spacing={2} direction="row">
           {events.map((event) => (
             <Event 
               key={event.id}
@@ -57,17 +59,20 @@ export default function Top() {
               title={event.title}
             />
             ))}
+          </Stack>
         </div>
         <button onClick={handleLogout}>ログアウト</button>
         <div>
           <h3>Score</h3>
-          {scores.map((score) => (
-            <Score 
-              key={score.id}
-              condition_score={score.condition_score}
-              sleep_score={score.sleep_score}
-            />
-          ))}
+          <Stack spacing={2} direction="row">
+            {scores.map((score) => (
+              <Score 
+                key={score.id}
+                condition_score={score.condition_score}
+                sleep_score={score.sleep_score}
+              />
+            ))}
+          </Stack>
         </div>
         <div>
           <h3>Feeling</h3>
