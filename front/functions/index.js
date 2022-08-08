@@ -3,8 +3,6 @@ const admin = require('firebase-admin');
 admin.initializeApp()
 const db = admin.firestore();
 
-// const GetConditionScore = require("./ouraAPI");
-// import GetConditionScore from "../src/components/score/ouraAPI";
 
 function formatDate(dt) {
   var y = dt.getFullYear();
@@ -22,123 +20,165 @@ const yesterday = getBeforeNdays(1);
 
 
 
-let accessToken = "";
 
-const user = db.collection('users').doc('K8Uko5DUf5eHHM4OpFxM');
-const getUserInfo = () => {
-  user.get().then(function(doc) {
-      if (doc.exists) {
-        const userInfo = doc.data();
-        const ourakey = userInfo.ourakey;
-        accessToken = ourakey;
-        console.log("accessToken", accessToken);
-        return accessToken;
-      } else {
-          console.log("No such document!");
-      }
-  }).catch(function(error) {
-      console.log("Error getting document:", error);
-  });
-}
-
-
-
-
-
+//test用のfunctionです↓
 // exports.fetchScore = functions.https.onRequest(async (request, response) => {
+
+//   let accessToken = "";
+//   let userId = "";
+
+//   // oura ring API
+//   const Client = require('oura-cloud-api');
+
+//   const GetConditionScore = async () => {
     
+//     try {
+//       const client = new Client(accessToken);
+
+//       const userInfo  = await client.getUserInfo();
+//       console.log("apiの通信自体はOK", userInfo);
+
+                    
+//       const readiness  = await client.getReadinessSummaries({ start: yesterday, end: yesterday });
+//       const sleeps  = await client.getSleepSummaries({ start: yesterday, end: yesterday });
+
+//       let todayReady = "";
+//       let todaySleep = "";
+//       for(const ready of readiness){
+//           todayReady = ready.score;
+//       }
+//       for(const sleep of sleeps){
+//         todaySleep = sleep.score;
+//       }
+//       let todayScore = {
+//         readyScore: todayReady,
+//         sleepScore: todaySleep
+//       };
+//       console.info("score取得全体がOK");
+//       return todayScore;
+    
+//     } catch (error) {
+//         console.log(`Oh-no, error occured: ${error}`);
+//     }
+//   }
 
 
-//         const user = db.collection('users').doc('K8Uko5DUf5eHHM4OpFxM');
-//         const getUserInfo = () => {
-//           user.get().then(function(doc) {
-//               if (doc.exists) {
-//                 const userInfo = doc.data();
-//                 const ourakey = userInfo.ourakey;
-//                 accessToken = ourakey;
-//                 console.log("accessToken", accessToken);
-//                 return accessToken;
-//               } else {
-//                   console.log("No such document!");
-//               }
-//           }).catch(function(error) {
-//               console.log("Error getting document:", error);
-//           });
-//         }
-//         getUserInfo();
-        
+//   db.collection("users").get().then((querySnapshot) => {
 
+//       querySnapshot.forEach(userSnapshot => {
+//           const user = userSnapshot.data()
+//           if (user.ourakey) {
+//             accessToken = user.ourakey;
+//             console.log("accessToken", accessToken);
+//             userId = user.id;
+//             console.log("userId", userId);
+//           }
 
+//           GetConditionScore()
+//             .then((todayScore) => {
+//               db.collection("health_scores").add({
+//                 condition_score: todayScore.readyScore,
+//                 // created_at: context.timestamp,
+//                 day:yesterday,
+//                 // id:context.eventId,
+//                 sleep_score: todayScore.sleepScore,
+//                 user_id: userId,
+//               })
+//             })
+//             .then(
+//               console.info("全部うまくいったよ〜")
+//             );
+//           return;
+//       })
+
+//   });
 // });
 
 
 //ScoreのCREATE
 exports.scheduledFuncScore = functions.region('asia-northeast1').pubsub
     .schedule('0 4 * * *') 
+    .timeZone('Asia/Tokyo')
     .onRun(async (context) => {
 
-        require('dotenv').config();
-        const Client = require('oura-cloud-api');//oura ring API
+        let accessToken = "";
+        let userId = "";
+
+        // oura ring API
+        const Client = require('oura-cloud-api');
 
         const GetConditionScore = async () => {
+          
+          try {
+            const client = new Client(accessToken);
 
-            //firestoreからkeyを取得する
-            const userKey = db.collection('users').doc('K8Uko5DUf5eHHM4OpFxM');
+            const userInfo  = await client.getUserInfo();
+            console.log("apiの通信自体はOK", userInfo);
 
-            // const accessToken = process.env.OURA_KEY;
-            const accessToken = getUserInfo();
-            
-            try {
-              const client = new Client(accessToken);
-              
-              const userInfo  = await client.getUserInfo();
-              // console.log(JSON.stringify(userInfo));
-              
-              const readiness  = await client.getReadinessSummaries({ start: yesterday, end: yesterday });//日付を動的にする
-              const sleeps  = await client.getSleepSummaries({ start: yesterday, end: yesterday });
-              console.log(JSON.stringify(sleeps))
-  
-              let todayReady = "";
-              let todaySleep = "";
-              for(const ready of readiness){
-                  todayReady = ready.score;
-              }
-              for(const sleep of sleeps){
-                todaySleep = sleep.score;
-              }
-              let todayScore = {
-                readyScore:todayReady,
-                sleepScore:todaySleep
-              };
-              return todayScore;
-            
+                          
+            const readiness  = await client.getReadinessSummaries({ start: yesterday, end: yesterday });
+            const sleeps  = await client.getSleepSummaries({ start: yesterday, end: yesterday });
+
+            let todayReady = "";
+            let todaySleep = "";
+            for(const ready of readiness){
+                todayReady = ready.score;
+            }
+            for(const sleep of sleeps){
+              todaySleep = sleep.score;
+            }
+            let todayScore = {
+              readyScore: todayReady,
+              sleepScore: todaySleep
+            };
+            console.info("score取得全体がOK");
+            return todayScore;
+          
           } catch (error) {
               console.log(`Oh-no, error occured: ${error}`);
           }
         }
 
 
-        GetConditionScore().then((todayScore) => {
-            db.collection("health_scores").add({
-              condition_score: todayScore.readyScore,
-              created_at: context.timestamp,
-              day:yesterday,
-              id:context.eventId,
-              sleep_score: todayScore.sleepScore,
-              user_id:""
-            })
-        });
-        
+        db.collection("users").get().then((querySnapshot) => {
 
-        console.info("毎朝4時に実行中 score");
-        return;
+            querySnapshot.forEach(userSnapshot => {
+                const user = userSnapshot.data()
+                if (user.ourakey) {
+                  accessToken = user.ourakey;
+                  console.log("accessToken", accessToken);
+                  userId = user.id;
+                  console.log("userId", userId);
+                }
+
+                GetConditionScore()
+                  .then((todayScore) => {
+                    db.collection("health_scores").add({
+                      condition_score: todayScore.readyScore,
+                      created_at: context.timestamp,
+                      day: yesterday,
+                      id: context.eventId,
+                      sleep_score: todayScore.sleepScore,
+                      user_id: userId,
+                    })
+                  })
+                  .then(
+                    console.info("ほぼ全部うまくいったよ〜")
+                  );
+                return;
+            })
+
+        });
+
+
     });
 
 
 
 //EventのCREATE
 exports.scheduledFuncEvent = functions.region('asia-northeast1').pubsub
-    .schedule('0 4 * * *') 
+    .schedule('0 4 * * *')
+    .timeZone('Asia/Tokyo')
     .onRun(async (context) => {
 
         const db = admin.firestore()
