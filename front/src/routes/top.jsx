@@ -1,5 +1,5 @@
 import db from '../firebase.js';
-import { collection, getDocs, orderBy, query } from "firebase/firestore";
+import { collection, getDocs, orderBy, query, limit } from "firebase/firestore";
 import React, { useState, useEffect } from 'react';
 import Event from '../components/event';
 import Score from '../components/score/score';
@@ -71,14 +71,15 @@ export default function Top() {
   useEffect(() => {
     //events
     const eventsData = collection(db, "events");
-    const q = query(eventsData, orderBy("day", "desc"));
+    const q = query(eventsData, orderBy("day", "desc"), limit(3));
     getDocs(q).then((querySnapshot) => {
       setEvents(querySnapshot.docs.map((doc) =>doc.data()));
     });
 
     //scores
     const myScores = collection(db, "health_scores");
-    getDocs(myScores).then((querySnapshot) => {
+    const queryScore = query(myScores, orderBy("day", "desc"), limit(5));
+    getDocs(queryScore).then((querySnapshot) => {
       setScores(querySnapshot.docs.map((doc) =>doc.data()));
     })
 
@@ -91,6 +92,8 @@ export default function Top() {
     return (
 
       <main style={{ padding: "1rem 0" }}>
+                <button onClick={handleLogout}>ログアウト</button>
+
         <h2>Top</h2>
         <div>
           <Stack spacing={2} direction="row">
@@ -104,7 +107,6 @@ export default function Top() {
             ))}
           </Stack>
         </div>
-        <button onClick={handleLogout}>ログアウト</button>
 
 
         <h3>Score</h3>
