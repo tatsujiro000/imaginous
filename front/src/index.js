@@ -16,11 +16,13 @@ import Mypage from './routes/mypage.jsx';
 import reportWebVitals from './reportWebVitals.js';
 import { StyledEngineProvider } from '@mui/material/styles';
 
-
 const root = ReactDOM.createRoot(document.getElementById('root'));
+
+
 root.render(
   <React.StrictMode>
     <StyledEngineProvider injectFirst>
+
 
       <BrowserRouter>
         <Routes>
@@ -42,6 +44,7 @@ root.render(
           />
         </Routes>
       </BrowserRouter>
+
 
     </StyledEngineProvider>
   </React.StrictMode>

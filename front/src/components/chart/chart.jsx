@@ -1,5 +1,5 @@
 import db from '../../firebase';
-import { collection, getDocs, orderBy, query } from "firebase/firestore";
+import { collection, getDocs, orderBy, query, where } from "firebase/firestore";
 import React, { useState, useEffect } from "react";
 import {
   LineChart,
@@ -11,17 +11,21 @@ import {
   Tooltip
 } from "recharts";
 
-const RenderLineChart = () => {
+const RenderLineChart = (user_id) => {
 
-    //dbから取得
-    const healthScores = collection(db, "health_scores");
-    const q = query(healthScores, orderBy("day", "asc"));
     let myArray = [];
     let dataValue;
 
-    const [myScores, setmyScores] = useState([]);
+    const [Scores, setScores] = useState([]);
+    const [userId, setUserId] = useState(0);
 
     useEffect(()=>{
+        setUserId(user_id.user_id);
+        console.log(userId);
+        //dbから取得
+        const healthScores = collection(db, "health_scores");
+        const q = query(healthScores, where("user_id", "==", userId), orderBy("day", "asc"));
+
         getDocs(q).then((querySnapshot) => {
           myArray = [];
           querySnapshot.docs.forEach((doc) => {
@@ -29,12 +33,12 @@ const RenderLineChart = () => {
                 myArray.push(dataValue);
             }
           );
-          setmyScores(myArray);
+          setScores(myArray);
         })
-    },[])
+    },[userId])
     
     return (
-      <LineChart width={800} height={400} data={myScores}>
+      <LineChart width={800} height={400} data={Scores}>
         <CartesianGrid strokeDasharray="3 4" />
         <XAxis dataKey="day" />
         <YAxis />

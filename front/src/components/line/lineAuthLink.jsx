@@ -1,0 +1,56 @@
+import React,{ useState, useEffect } from "react";
+import db from '../../firebase';
+import { doc, setDoc } from "firebase/firestore";
+import Box from '@mui/material/Box';
+import Link from '@mui/material/Link';
+import Button from '@mui/material/Button';
+import axios from "axios";
+import { useAuthContext } from '../../context/authContext';
+
+
+const baseURL = "https://notify-bot.line.me/oauth/token";
+
+
+export const LineAuthLink = () => {
+
+    const { user } = useAuthContext();
+
+
+    const [postResullts, setPostResullts] = useState("");
+
+    const getAcesstoken = () => {
+        const uid = user.uid;
+        const userRef = doc(db, 'users', uid);
+    
+        axios.post(baseURL, {
+            "grant_type": "authorization_code",
+            "code": 123,
+            "redirect_uri": "tatsuyaoshikiri.work",
+            "client_id": "uvThqlJZgBwlwRXYZ7RnSZ",
+            "client_secret": "KnEyEJibbNJJM434qOf9QyxaVl7PNS2rT3zOc90vLV2",
+        }).then((response) => {
+            console.log(response.data())
+            // setPostResullts(response.data);
+        });
+    }
+
+    return (
+        <>
+            <Box
+                sx={{
+                    typography: 'body1',
+                    '& > :not(style) + :not(style)': {
+                    ml: 2,
+                    },
+                }}
+                >
+                    下記のリンクにアクセスすると、imaginousからのLINE通知を受け取ることができます。
+                <Link href="https://notify-bot.line.me/oauth/authorize?response_type=code&client_id=uvThqlJZgBwlwRXYZ7RnSZ&redirect_uri=https://tatsuyaoshikiri.work/&scope=notify&state=state">LINEの通知を受け取る</Link>
+                <Button variant="outlined" onClick={getAcesstoken}>LINEのアクセスを取得する</Button>
+            </Box>
+        </>
+    )
+}
+
+
+

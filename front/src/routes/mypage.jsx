@@ -5,17 +5,20 @@ import Stack from '@mui/material/Stack';
 import Button from '@mui/material/Button';
 import axios from "axios";
 import { useAuthContext } from '../context/authContext';
+import { LineAuthLink } from '../components/line/lineAuthLink';
 
 
 const baseURL = "https://api.ouraring.com/v1/userinfo?access_token=";
 
 
 export default function Mypage() {
-  const userProfile = UserInfo();
-  const profile = userProfile.userinfo;
-
-
+    
   const { user } = useAuthContext();
+
+  const userProfile = UserInfo();
+  console.log("userProfile", userProfile)
+  const profile = userProfile.userinfo;
+  console.log("profile", profile)
 
   const GetOuraUserInfo = () => {
     const uid = user.uid;
@@ -29,7 +32,6 @@ export default function Mypage() {
         height: ouraUserData.height,
         weight: ouraUserData.weight,
       }, { merge: true });
-
       
     });
   };
@@ -51,6 +53,10 @@ export default function Mypage() {
         <Stack spacing={2} direction="row">
           <Button onClick={GetOuraUserInfo} variant="outlined">get Oura User Information</Button>
         </Stack>
+
+        <LineAuthLink />
+
+        
       </main>
     );
 }

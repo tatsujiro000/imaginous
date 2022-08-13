@@ -1,5 +1,5 @@
 import db from '../firebase.js';
-import { collection, getDocs, orderBy, query, limit } from "firebase/firestore";
+import { collection, getDocs, orderBy, query, limit, where } from "firebase/firestore";
 import React, { useState, useEffect } from 'react';
 import Event from '../components/event';
 import Score from '../components/score/score';
@@ -49,7 +49,9 @@ function a11yProps(index) {
 
 export default function Top() {
   const [events, setEvents] = useState([]);
-  const [scores, setScores] = useState([]);
+  const [myScores, setMyScores] = useState([]);
+  const [partnerScores, setPartnerScores] = useState([]);
+  const [myFeelings, setMyFeelings] = useState([]);
   const [value, setValue] = useState(0);
 
   const navigate = useNavigate();
@@ -77,12 +79,23 @@ export default function Top() {
     });
 
     //scores
-    const myScores = collection(db, "health_scores");
-    const queryScore = query(myScores, orderBy("day", "desc"), limit(5));
-    getDocs(queryScore).then((querySnapshot) => {
-      setScores(querySnapshot.docs.map((doc) =>doc.data()));
+    const scoresData = collection(db, "health_scores");
+    const myScores = query(scoresData, where("user_id", "==", 1), orderBy("day", "desc"), limit(5));
+    getDocs(myScores).then((querySnapshot) => {
+      setMyScores(querySnapshot.docs.map((doc) =>doc.data()));
+    })
+    //partner_scores
+    const partnerScores = query(scoresData, where("user_id", "==", 3), orderBy("day", "desc"), limit(5));
+    getDocs(partnerScores).then((querySnapshot) => {
+      setPartnerScores(querySnapshot.docs.map((doc) =>doc.data()));
     })
 
+    //feelings
+    const feelingsData = collection(db, "feelings");
+    const myFeelings = query(feelingsData, where("user_id", "==", 1), orderBy("created_at", "desc"), limit(5));
+    getDocs(myFeelings).then((querySnapshot) => {
+      setMyFeelings(querySnapshot.docs.map((doc) =>doc.data()));
+    });
   },[]);
 
 
@@ -120,7 +133,7 @@ export default function Top() {
           </Box>
           <TabPanel value={value} index={0}>
               <Stack spacing={2} direction="row">
-                {scores.map((score) => (
+                {myScores.map((score) => (
                   <Score 
                     key={score.id}
                     condition_score={score.condition_score}
@@ -128,23 +141,50 @@ export default function Top() {
                   />
                 ))}
               </Stack>
+              <Box>
+                <h3>Feeling</h3>
+                <Stack spacing={2} direction="row">
+                {myFeelings.map((feeling) => (
+                  <Score 
+                    key={feeling.id}
+                    condition_score={feeling.text}
+                  />
+                ))}
+              </Stack>
+              </Box>
+              <Box>
+                <h3>Trend</h3>
+                  <RenderLineChart 
+                  user_id={1}
+              />
+              </Box>
+
           </TabPanel>
+
+
+          {/* Partner Area*/}
           <TabPanel value={value} index={1}>
-            Partner
+            <Stack spacing={2} direction="row">
+                {partnerScores.map((score) => (
+                  <Score 
+                    key={score.id}
+                    condition_score={score.condition_score}
+                    sleep_score={score.sleep_score}
+                  />
+                ))}
+              </Stack>
+              <Box>
+                <h3>Feeling</h3>
+              </Box>
+
+              <Box>
+                <h3>Trend</h3>
+                  <RenderLineChart 
+                    user_id={3}
+                  />
+              </Box>
           </TabPanel>
         </Box>
-
-
-        
-        <div>
-          <h3>Feeling</h3>
-        </div>
-        <div>
-          <h3>Trend</h3>
-            <RenderLineChart 
-         />
-            
-        </div>
 
       </main>
     );

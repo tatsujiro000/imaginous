@@ -4,6 +4,7 @@ admin.initializeApp()
 const db = admin.firestore();
 
 
+
 function formatDate(dt) {
   var y = dt.getFullYear();
   var m = ('00' + (dt.getMonth()+1)).slice(-2);
@@ -20,17 +21,12 @@ const yesterday = getBeforeNdays(1);
 
 
 
-
-//test用のfunctionです↓
+// test用のfunction 22222です↓
 // exports.fetchScore = functions.https.onRequest(async (request, response) => {
-
-//   let accessToken = "";
-//   let userId = "";
-
 //   // oura ring API
 //   const Client = require('oura-cloud-api');
 
-//   const GetConditionScore = async () => {
+//   const GetConditionScore = async (accessToken, userId) => { //バッチファイルの中に関数の定義があるのは無駄
     
 //     try {
 //       const client = new Client(accessToken);
@@ -42,13 +38,13 @@ const yesterday = getBeforeNdays(1);
 //       const readiness  = await client.getReadinessSummaries({ start: yesterday, end: yesterday });
 //       const sleeps  = await client.getSleepSummaries({ start: yesterday, end: yesterday });
 
-//       let todayReady = "";
-//       let todaySleep = "";
+//       let todayReady = 0;
+//       let todaySleep = 0;
 //       for(const ready of readiness){
-//           todayReady = ready.score;
+//           todayReady += ready.score;
 //       }
 //       for(const sleep of sleeps){
-//         todaySleep = sleep.score;
+//         todaySleep += sleep.score;
 //       }
 //       let todayScore = {
 //         readyScore: todayReady,
@@ -63,30 +59,38 @@ const yesterday = getBeforeNdays(1);
 //   }
 
 
-//   db.collection("users").get().then((querySnapshot) => {
+//   const usersData = db.collection("users");
+//   const query = usersData.where("ourakey", "!=", "");
+
+//   query.get().then((querySnapshot, context) => { //この時点でourakeyを持っているuserのみに絞り込んでおく
 
 //       querySnapshot.forEach(userSnapshot => {
-//           const user = userSnapshot.data()
-//           if (user.ourakey) {
-//             accessToken = user.ourakey;
-//             console.log("accessToken", accessToken);
-//             userId = user.id;
-//             console.log("userId", userId);
-//           }
+//           let accessToken = "";
+//           let userId = "";
 
-//           GetConditionScore()
+//           const user = userSnapshot.data()
+//           if(!user.ourakey) {
+//             return;
+//           }
+//           accessToken = user.ourakey;
+//           console.log("accessToken", accessToken);
+//           userId = user.id;
+//           console.log("userId", userId);
+         
+
+//           GetConditionScore(accessToken, userId)
 //             .then((todayScore) => {
 //               db.collection("health_scores").add({
 //                 condition_score: todayScore.readyScore,
-//                 // created_at: context.timestamp,
-//                 day:yesterday,
-//                 // id:context.eventId,
+//                 day: yesterday,
+//                 id: context.eventId,
+//                 created_at: context.timestamp,
 //                 sleep_score: todayScore.sleepScore,
 //                 user_id: userId,
 //               })
 //             })
 //             .then(
-//               console.info("全部うまくいったよ〜")
+//               console.info("ほぼ全部うまくいったよ〜")
 //             );
 //           return;
 //       })
@@ -101,74 +105,72 @@ exports.scheduledFuncScore = functions.region('asia-northeast1').pubsub
     .timeZone('Asia/Tokyo')
     .onRun(async (context) => {
 
-        let accessToken = "";
-        let userId = "";
-
-        // oura ring API
-        const Client = require('oura-cloud-api');
-
-        const GetConditionScore = async () => {
-          
-          try {
-            const client = new Client(accessToken);
-
-            const userInfo  = await client.getUserInfo();
-            console.log("apiの通信自体はOK", userInfo);
-
-                          
-            const readiness  = await client.getReadinessSummaries({ start: yesterday, end: yesterday });
-            const sleeps  = await client.getSleepSummaries({ start: yesterday, end: yesterday });
-
-            let todayReady = "";
-            let todaySleep = "";
-            for(const ready of readiness){
-                todayReady = ready.score;
-            }
-            for(const sleep of sleeps){
-              todaySleep = sleep.score;
-            }
-            let todayScore = {
-              readyScore: todayReady,
-              sleepScore: todaySleep
-            };
-            console.info("score取得全体がOK");
-            return todayScore;
-          
-          } catch (error) {
-              console.log(`Oh-no, error occured: ${error}`);
+      // oura ring API
+      const Client = require('oura-cloud-api');
+    
+      const GetConditionScore = async (accessToken, userId) => { //バッチファイルの中に関数の定義があるのは無駄
+        
+        try {
+          const client = new Client(accessToken);
+    
+          const userInfo  = await client.getUserInfo();
+    
+                        
+          const readiness  = await client.getReadinessSummaries({ start: yesterday, end: yesterday });
+          const sleeps  = await client.getSleepSummaries({ start: yesterday, end: yesterday });
+    
+          let todayReady = 0;
+          let todaySleep = 0;
+          for(const ready of readiness){
+              todayReady += ready.score;
           }
+          for(const sleep of sleeps){
+            todaySleep += sleep.score;
+          }
+          let todayScore = {
+            readyScore: todayReady,
+            sleepScore: todaySleep
+          };
+          return todayScore;
+        
+        } catch (error) {
+            console.log(`Oh-no, error occured: ${error}`);
         }
-
-
-        db.collection("users").get().then((querySnapshot) => {
-
-            querySnapshot.forEach(userSnapshot => {
-                const user = userSnapshot.data()
-                if (user.ourakey) {
-                  accessToken = user.ourakey;
-                  console.log("accessToken", accessToken);
-                  userId = user.id;
-                  console.log("userId", userId);
-                }
-
-                GetConditionScore()
-                  .then((todayScore) => {
-                    db.collection("health_scores").add({
-                      condition_score: todayScore.readyScore,
-                      created_at: context.timestamp,
-                      day: yesterday,
-                      id: context.eventId,
-                      sleep_score: todayScore.sleepScore,
-                      user_id: userId,
-                    })
-                  })
-                  .then(
-                    console.info("ほぼ全部うまくいったよ〜")
-                  );
+      }
+    
+    
+      const usersData = db.collection("users");
+      const query = usersData.where("ourakey", "!=", "");
+    
+      query.get().then((querySnapshot) => {
+    
+          querySnapshot.forEach(userSnapshot => {
+              let accessToken = "";
+              let userId = "";
+    
+              const user = userSnapshot.data()
+              if(!user.ourakey) {
                 return;
-            })
-
-        });
+              }
+              accessToken = user.ourakey;
+              userId = user.id;
+             
+    
+              GetConditionScore(accessToken, userId)
+                .then((todayScore) => {
+                  db.collection("health_scores").add({
+                    condition_score: todayScore.readyScore,
+                    created_at: context.timestamp,
+                    day: yesterday,
+                    id: Number(context.eventId),
+                    sleep_score: todayScore.sleepScore,
+                    user_id: userId,
+                  })
+                })
+              return;
+          })
+    
+      });
 
 
     });
