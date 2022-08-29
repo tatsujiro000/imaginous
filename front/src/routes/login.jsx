@@ -7,7 +7,10 @@ import Button from '@mui/material/Button';
 import Container from '@mui/material/Container';
 import Paper from '@mui/material/Paper';
 import Box from '@mui/material/Box';
-
+import InputAdornment from '@mui/material/InputAdornment';
+import MailRoundedIcon from '@mui/icons-material/MailRounded';
+import KeyRoundedIcon from '@mui/icons-material/KeyRounded';
+import Typography from '@mui/material/Typography';
 
 
 
@@ -49,19 +52,49 @@ export default function Login() {
       <main style={{ padding: "1rem 0" }}>
         <Container maxWidth="sm">
         <Box>
-          <h2>Login</h2>
+          <Typography variant="h3">Login</Typography>
         
           {error && <p style={{color:'red'}}>{error}</p>}
           <form onSubmit={handleSubmit}>
             <Stack spacing={3} direction="column">
 
-            <TextField name="email" id="email" label="メールアドレス" variant="outlined" defaultValue="" type="email" inputRef={emailRef}/>
-            <TextField name="password" id="password" label="パスワード" variant="outlined" defaultValue="" type="password" inputRef={passwordRef}/>
+              <TextField 
+                name="email" 
+                id="email" 
+                label="メールアドレス" 
+                variant="standard" 
+                defaultValue="" 
+                type="email" 
+                inputRef={emailRef}
+                InputProps={{
+                  startAdornment: (
+                    <InputAdornment position="start">
+                      <MailRoundedIcon color="primary" />
+                    </InputAdornment>
+                  ),
+                }}
+              />
+              <TextField 
+                name="password" 
+                id="password" 
+                label="パスワード" 
+                variant="standard" 
+                defaultValue="" 
+                type="password" 
+                inputRef={passwordRef}
+                InputProps={{
+                  startAdornment: (
+                    <InputAdornment position="start">
+                      <KeyRoundedIcon color="primary" />
+                    </InputAdornment>
+                  ),
+                }}
+              />
+              <Stack alignItems="center">
+                <Button variant="contained" type="submit">ログインする</Button>
+                <p>ユーザー登録は<Link to={'/signup'}>こちら</Link></p>
+              </Stack>
 
-              <Button variant="contained" type="submit">ログインする</Button>
-              <div>
-                ユーザー登録は<Link to={'/signup'}>こちら</Link>
-              </div>
             </Stack>
           </form>
           <Paper />

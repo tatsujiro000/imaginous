@@ -45,8 +45,7 @@ export const LineAuthLink = () => {
                 }}
                 >
                     下記のリンクにアクセスすると、imaginousからのLINE通知を受け取ることができます。
-                <Link href="https://notify-bot.line.me/oauth/authorize?response_type=code&client_id=uvThqlJZgBwlwRXYZ7RnSZ&redirect_uri=https://tatsuyaoshikiri.work/&scope=notify&state=state">LINEの通知を受け取る</Link>
-                <Button variant="outlined" onClick={getAcesstoken}>LINEのアクセスを取得する</Button>
+                <Link href="https://notify-bot.line.me/oauth/authorize?response_type=code&client_id=uvThqlJZgBwlwRXYZ7RnSZ&redirect_uri=https://asia-northeast1-imaginous.cloudfunctions.net/get_response_json&scope=notify&state=imaginous">LINEの通知を受け取る</Link>
             </Box>
         </>
     )

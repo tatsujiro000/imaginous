@@ -2,6 +2,7 @@ const functions = require('firebase-functions');
 const admin = require('firebase-admin');
 admin.initializeApp()
 const db = admin.firestore();
+const request = require('request');
 
 
 
@@ -195,3 +196,80 @@ exports.scheduledFuncEvent = functions.region('asia-northeast1').pubsub
         console.info("毎朝4時に実行 event");
         return;
     });
+
+
+
+//ここからはLINE notify関連
+async function get_response(code){
+  // console.log(response_code)
+  var headers = {
+    'Content-Type': 'application/x-www-form-urlencoded'
+  };
+
+  //一旦ハードコーディング
+  var dataString = 'grant_type=authorization_code&code=' + code + '&redirect_uri=https://asia-northeast1-imaginous.cloudfunctions.net/get_response_json&client_id=uvThqlJZgBwlwRXYZ7RnSZ&client_secret=KnEyEJibbNJJM434qOf9QyxaVl7PNS2rT3zOc90vLV2';
+
+  var options = {
+    url: 'https://notify-bot.line.me/oauth/token',
+    method: 'POST',
+    headers: headers,
+    body: dataString
+  };
+
+  async function callback(error, response, body) {
+    if (response.statusCode == 200) {
+      console.log("1",body);
+      const email = authenticationInfo.principalEmail;
+      console.log("2",email);
+      push_to_db(body, email);
+    }else{
+      console.log(error);
+    }
+  }
+  request(options, callback);
+}
+
+async function push_to_db(response, email){
+  let access_token = JSON.parse(response)
+  console.log(access_token)
+
+  //ユーザーデータを取得
+  const userData = collection(db, "users");
+  const answerUser = query(userData, where("email", "==", email));
+  console.log(answerUser);
+
+  //LINEアクセストークンをDBに挿入
+
+}
+
+
+exports.get_response_json = functions.region('asia-northeast1').https.onRequest((req, res) => {
+  let resCode = req.query.code
+  if (req.method === "GET"){
+    resCode = req.query.code
+    get_response(resCode)
+  }
+  res.status(200).send(`
+    <!DOCTYPE html>
+    <html lang="ja">
+      <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width,initial-scale=1.0">
+        <title>トークンリクエスト</title>
+      </head>
+      <body>
+        <div>
+          <h1>LINEとの連携が完了しました</h1></b>
+          LINEとの連携が完了しました。<br/>
+          今後は健康状態に応じて、LINEに通知が行くようになります。
+          <a href="https://imaginous.web.app/">Imaginousへ戻る</a>
+        </div>
+      </body>
+    </html>`
+  );
+
+});
+
+
+const getGenerate = require('./generate');
+exports.post_openai = getGenerate.post_openai;
