@@ -1,0 +1,73 @@
+[debug] [2022-08-29T09:16:05.658Z] ----------------------------------------------------------------------
+[debug] [2022-08-29T09:16:05.658Z] Command:       /opt/homebrew/Cellar/node@16/16.16.0/bin/node /opt/homebrew/bin/firebase serve -p 5002 --only functions
+[debug] [2022-08-29T09:16:05.659Z] CLI Version:   10.9.2
+[debug] [2022-08-29T09:16:05.659Z] Platform:      darwin
+[debug] [2022-08-29T09:16:05.659Z] Node Version:  v16.16.0
+[debug] [2022-08-29T09:16:05.660Z] Time:          Mon Aug 29 2022 18:16:05 GMT+0900 (日本標準時)
+[debug] [2022-08-29T09:16:05.660Z] ----------------------------------------------------------------------
+[debug] 
+[debug] [2022-08-29T09:16:05.692Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2022-08-29T09:16:05.692Z] > authorizing via signed-in user (t.oshikiri000@gmail.com)
+[debug] [2022-08-29T09:16:05.692Z] [iam] checking project imaginous for permissions ["firebase.projects.get"]
+[debug] [2022-08-29T09:16:05.693Z] > refreshing access token with scopes: []
+[debug] [2022-08-29T09:16:05.693Z] >>> HTTP REQUEST POST https://www.googleapis.com/oauth2/v3/token  
+ <request body omitted>
+[debug] [2022-08-29T09:16:05.903Z] <<< HTTP RESPONSE 200 {"date":"Mon, 29 Aug 2022 09:16:05 GMT","cache-control":"no-cache, no-store, max-age=0, must-revalidate","pragma":"no-cache","expires":"Mon, 01 Jan 1990 00:00:00 GMT","content-type":"application/json; charset=utf-8","vary":"X-Origin, Referer, Origin,Accept-Encoding","server":"scaffolding on HTTPServer2","x-xss-protection":"0","x-frame-options":"SAMEORIGIN","x-content-type-options":"nosniff","alt-svc":"h3=\":443\"; ma=2592000,h3-29=\":443\"; ma=2592000,h3-Q050=\":443\"; ma=2592000,h3-Q046=\":443\"; ma=2592000,h3-Q043=\":443\"; ma=2592000,quic=\":443\"; ma=2592000; v=\"46,43\"","accept-ranges":"none","transfer-encoding":"chunked"}
+[debug] [2022-08-29T09:16:05.954Z] >>> [apiv2][query] POST https://cloudresourcemanager.googleapis.com/v1/projects/imaginous:testIamPermissions [none]
+[debug] [2022-08-29T09:16:05.955Z] >>> [apiv2][body] POST https://cloudresourcemanager.googleapis.com/v1/projects/imaginous:testIamPermissions {"permissions":["firebase.projects.get"]}
+[debug] [2022-08-29T09:16:06.787Z] <<< [apiv2][status] POST https://cloudresourcemanager.googleapis.com/v1/projects/imaginous:testIamPermissions 200
+[debug] [2022-08-29T09:16:06.788Z] <<< [apiv2][body] POST https://cloudresourcemanager.googleapis.com/v1/projects/imaginous:testIamPermissions {"permissions":["firebase.projects.get"]}
+[debug] [2022-08-29T09:16:06.789Z] >>> [apiv2][query] GET https://firebase.googleapis.com/v1beta1/projects/imaginous [none]
+[debug] [2022-08-29T09:16:07.190Z] <<< [apiv2][status] GET https://firebase.googleapis.com/v1beta1/projects/imaginous 200
+[debug] [2022-08-29T09:16:07.191Z] <<< [apiv2][body] GET https://firebase.googleapis.com/v1beta1/projects/imaginous {"projectId":"imaginous","projectNumber":"707711761308","displayName":"imaginous","name":"projects/imaginous","resources":{"hostingSite":"imaginous","realtimeDatabaseInstance":"imaginous-default-rtdb","storageBucket":"imaginous.appspot.com","locationId":"asia-northeast1"},"state":"ACTIVE","etag":"1_8f9dc519-a0d6-48ef-8da2-c606e9316a76"}
+[info] ✔  functions: Using node@16 from host. {"metadata":{"emulator":{"name":"functions"},"message":"Using node@16 from host."}}
+[debug] [2022-08-29T09:16:07.203Z] defaultcredentials: writing to file /Users/oshikiri/.config/firebase/t_oshikiri000_gmail.com_application_default_credentials.json
+[debug] [2022-08-29T09:16:07.205Z] Setting GAC to /Users/oshikiri/.config/firebase/t_oshikiri000_gmail.com_application_default_credentials.json {"metadata":{"emulator":{"name":"functions"},"message":"Setting GAC to /Users/oshikiri/.config/firebase/t_oshikiri000_gmail.com_application_default_credentials.json"}}
+[debug] [2022-08-29T09:16:07.205Z] >>> [apiv2][query] GET https://firebase.googleapis.com/v1beta1/projects/imaginous/adminSdkConfig [none]
+[debug] [2022-08-29T09:16:07.580Z] <<< [apiv2][status] GET https://firebase.googleapis.com/v1beta1/projects/imaginous/adminSdkConfig 200
+[debug] [2022-08-29T09:16:07.581Z] <<< [apiv2][body] GET https://firebase.googleapis.com/v1beta1/projects/imaginous/adminSdkConfig {"projectId":"imaginous","databaseURL":"https://imaginous-default-rtdb.firebaseio.com","storageBucket":"imaginous.appspot.com","locationId":"asia-northeast1"}
+[info] i  functions: Watching "/Users/oshikiri/Desktop/G’s/imaginous/front/functions" for Cloud Functions... {"metadata":{"emulator":{"name":"functions"},"message":"Watching \"/Users/oshikiri/Desktop/G’s/imaginous/front/functions\" for Cloud Functions..."}}
+[debug] [2022-08-29T09:16:07.621Z] Validating nodejs source
+[debug] [2022-08-29T09:16:08.467Z] > [functions] package.json contents: {
+  "name": "functions",
+  "description": "Cloud Functions for Firebase",
+  "scripts": {
+    "lint": "eslint .",
+    "serve": "firebase emulators:start --only functions",
+    "shell": "firebase functions:shell",
+    "start": "npm run shell",
+    "deploy": "firebase deploy --only functions",
+    "logs": "firebase functions:log"
+  },
+  "engines": {
+    "node": "16"
+  },
+  "main": "index.js",
+  "dependencies": {
+    "dotenv": "^16.0.1",
+    "firebase-admin": "^10.0.2",
+    "firebase-functions": "^3.18.0",
+    "googleapis": "^39.2.0",
+    "openai": "^3.0.0",
+    "oura-cloud-api": "^1.0.2",
+    "request": "^2.88.2"
+  },
+  "devDependencies": {
+    "eslint": "^8.9.0",
+    "eslint-config-google": "^0.14.0",
+    "firebase-functions-test": "^0.2.0"
+  },
+  "private": true
+}
+[debug] [2022-08-29T09:16:08.468Z] Building nodejs source
+[debug] [2022-08-29T09:16:08.468Z] Analyzing nodejs backend spec
+[debug] [2022-08-29T09:16:08.469Z] Could not find functions.yaml. Must use http discovery
+[debug] [2022-08-29T09:16:08.608Z] Serving at port 9006
+
+[debug] [2022-08-29T09:16:08.712Z] Got response from /__/functions.yaml {"endpoints":{"scheduledFuncScore":{"platform":"gcfv1","region":["asia-northeast1"],"scheduleTrigger":{"schedule":"0 4 * * *","timeZone":"Asia/Tokyo"},"labels":{},"entryPoint":"scheduledFuncScore"},"scheduledFuncEvent":{"platform":"gcfv1","region":["asia-northeast1"],"scheduleTrigger":{"schedule":"0 4 * * *","timeZone":"Asia/Tokyo"},"labels":{},"entryPoint":"scheduledFuncEvent"},"get_response_json":{"platform":"gcfv1","region":["asia-northeast1"],"httpsTrigger":{},"entryPoint":"get_response_json"},"post_openai":{"platform":"gcfv1","region":["asia-northeast1"],"httpsTrigger":{},"entryPoint":"post_openai"}},"specVersion":"v1alpha1","requiredAPIs":[{"api":"cloudscheduler.googleapis.com","reason":"Needed for scheduled functions."}]}
+[debug] [2022-08-29T09:16:08.716Z] shutdown requested via /__/quitquitquit
+
+[info] i  functions[asia-northeast1-scheduledFuncScore]: function ignored because the pubsub emulator does not exist or is not running. {"metadata":{"emulator":{"name":"functions"},"message":"function ignored because the pubsub emulator does not exist or is not running."}}
+[info] i  functions[asia-northeast1-scheduledFuncEvent]: function ignored because the pubsub emulator does not exist or is not running. {"metadata":{"emulator":{"name":"functions"},"message":"function ignored because the pubsub emulator does not exist or is not running."}}
+[info] ✔  functions[asia-northeast1-get_response_json]: http function initialized (http://localhost:5002/imaginous/asia-northeast1/get_response_json). {"metadata":{"emulator":{"name":"functions"},"message":"\u001b[1mhttp\u001b[22m function initialized (http://localhost:5002/imaginous/asia-northeast1/get_response_json)."}}
+[info] ✔  functions[asia-northeast1-post_openai]: http function initialized (http://localhost:5002/imaginous/asia-northeast1/post_openai). {"metadata":{"emulator":{"name":"functions"},"message":"\u001b[1mhttp\u001b[22m function initialized (http://localhost:5002/imaginous/asia-northeast1/post_openai)."}}

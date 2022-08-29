@@ -193,7 +193,6 @@ exports.scheduledFuncEvent = functions.region('asia-northeast1').pubsub
             })
         
 
-        console.info("毎朝4時に実行 event");
         return;
     });
 
@@ -201,15 +200,14 @@ exports.scheduledFuncEvent = functions.region('asia-northeast1').pubsub
 
 //ここからはLINE notify関連
 async function get_response(code){
-  // console.log(response_code)
-  var headers = {
+  const headers = {
     'Content-Type': 'application/x-www-form-urlencoded'
   };
 
   //一旦ハードコーディング
-  var dataString = 'grant_type=authorization_code&code=' + code + '&redirect_uri=https://asia-northeast1-imaginous.cloudfunctions.net/get_response_json&client_id=uvThqlJZgBwlwRXYZ7RnSZ&client_secret=KnEyEJibbNJJM434qOf9QyxaVl7PNS2rT3zOc90vLV2';
+  const dataString = 'grant_type=authorization_code&code=' + code + '&redirect_uri=https://asia-northeast1-imaginous.cloudfunctions.net/get_response_json&client_id=' + process.env.LINE_CLIENT_ID + '&client_secret=' + process.env.LINE_CLIENT_SECRET;
 
-  var options = {
+  const options = {
     url: 'https://notify-bot.line.me/oauth/token',
     method: 'POST',
     headers: headers,
@@ -218,9 +216,7 @@ async function get_response(code){
 
   async function callback(error, response, body) {
     if (response.statusCode == 200) {
-      console.log("1",body);
       const email = authenticationInfo.principalEmail;
-      console.log("2",email);
       push_to_db(body, email);
     }else{
       console.log(error);
@@ -231,12 +227,10 @@ async function get_response(code){
 
 async function push_to_db(response, email){
   let access_token = JSON.parse(response)
-  console.log(access_token)
 
   //ユーザーデータを取得
   const userData = collection(db, "users");
   const answerUser = query(userData, where("email", "==", email));
-  console.log(answerUser);
 
   //LINEアクセストークンをDBに挿入
 

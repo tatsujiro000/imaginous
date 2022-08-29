@@ -7,7 +7,6 @@ import Button from '@mui/material/Button';
 import axios from "axios";
 import { useAuthContext } from '../../context/authContext';
 
-
 const baseURL = "https://notify-bot.line.me/oauth/token";
 
 
@@ -26,8 +25,8 @@ export const LineAuthLink = () => {
             "grant_type": "authorization_code",
             "code": 123,
             "redirect_uri": "tatsuyaoshikiri.work",
-            "client_id": "uvThqlJZgBwlwRXYZ7RnSZ",
-            "client_secret": "KnEyEJibbNJJM434qOf9QyxaVl7PNS2rT3zOc90vLV2",
+            "client_id": process.env.LINE_CLIENT_ID,
+            "client_secret": process.env.LINE_CLIENT_SECRET,
         }).then((response) => {
             console.log(response.data())
             // setPostResullts(response.data);
