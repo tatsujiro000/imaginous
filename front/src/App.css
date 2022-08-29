@@ -1,13 +1,15 @@
 .App {
   text-align: center;
 }
-
+.bg{
+  background-color: #edeef1;
+}
 .App-logo {
   height: 40vmin;
   pointer-events: none;
 }
 .activeLink{
-  color: green;
+  color: #3f8b6b;
 }
 
 @media (prefers-reduced-motion: no-preference) {

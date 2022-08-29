@@ -1,0 +1,15 @@
+.cs-message__content{
+    border-radius: 20px!important;
+    margin-bottom: 0.6rem;
+    box-shadow: 0px 0px 10px -10px #777777;
+}
+.cs-message--outgoing {
+    .cs-message__content{
+        background-color: #fff!important;
+    }
+}
+.cs-message--incoming {
+    .cs-message__content{
+        background-color: #e9d1ff!important;
+    }
+}

@@ -13,29 +13,24 @@ const UserInfo = () => {
     useEffect(()=>{
         const auth = getAuth();
         onAuthStateChanged(auth, async user => {
-            if (user) {
+            if (!user) {
+                console.log("error");
+            }
                 // User is signed in, see docs for a list of available properties
                 // https://firebase.google.com/docs/reference/js/firebase.User
                 const uid = user.uid;
 
                 //ユーザー情報の読み取り
-
                 const docRef = doc(db, "users", uid);
                 const docSnap = await getDoc(docRef);
-
-                if (docSnap.exists()) {
-                    console.log("Document data:", docSnap.data());
-                    const docData = docSnap.data();
-                    setUserInfo(docData);
-                } else {
-                // doc.data() will be undefined in this case
+                if (!docSnap.exists()) {
                     console.log("No such document!");
                 }
 
-            } else {
-                // User is signed out
-                console.log("error");
-            }
+                console.log("Document data:", docSnap.data());
+                const docData = docSnap.data();
+                setUserInfo(docData);
+            
         });
 
     },[]);
